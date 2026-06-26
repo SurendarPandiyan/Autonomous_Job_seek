@@ -9,6 +9,7 @@ from jobplatform.config import settings
 from jobplatform.database import Base
 import jobplatform.auth.models  # noqa: F401 — registers User with Base.metadata
 import jobplatform.profiles.models  # noqa: F401 — registers Profile with Base.metadata
+import jobplatform.preferences.models  # noqa: F401 — registers JobPreferences with Base.metadata
 
 _db_url = os.environ.get("DATABASE_URL", settings.database_url)
 
