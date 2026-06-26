@@ -10,6 +10,7 @@ from slowapi.errors import RateLimitExceeded
 from sqlalchemy import text
 
 from jobplatform.auth.router import router as auth_router
+from jobplatform.profiles.router import router as profiles_router
 from jobplatform.log_config import configure_logging
 from jobplatform.database import AsyncSessionLocal
 from jobplatform.rate_limiting import limiter
@@ -29,6 +30,7 @@ app = FastAPI(title="Job Platform API", version="0.1.0", lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.include_router(auth_router)
+app.include_router(profiles_router)
 
 
 @app.middleware("http")
