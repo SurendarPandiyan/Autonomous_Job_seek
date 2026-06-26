@@ -106,6 +106,6 @@ async def test_naukri_adapter_parses_response():
 async def test_adapter_http_error_returns_empty():
     """HTTP error during scrape returns empty list, does not raise."""
     adapter = NaukriAdapter()
-    with patch.object(adapter._client, "get", side_effect=httpx.HTTPError("timeout")):
+    with patch.object(adapter._client, "get", new_callable=AsyncMock, side_effect=httpx.HTTPError("timeout")):
         results = await adapter.search_jobs(JobQuery(keywords="Python", location="Bengaluru"))
     assert results == []
