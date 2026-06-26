@@ -38,3 +38,9 @@ async def authenticate_user(db: AsyncSession, email: str, password: str) -> User
 
 async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
     return await db.scalar(select(User).where(User.id == user_id))
+
+
+async def delete_user(db: AsyncSession, user_id: int) -> None:
+    from sqlalchemy import delete as sa_delete
+    await db.execute(sa_delete(User).where(User.id == user_id))
+    await db.commit()

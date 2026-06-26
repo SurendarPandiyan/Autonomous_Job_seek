@@ -81,3 +81,14 @@ async def test_logout_clears_cookie(client: AsyncClient):
     resp = await client.post("/api/v1/auth/logout")
     assert resp.status_code == 200
     assert resp.cookies.get("refresh_token") is None or resp.cookies["refresh_token"] == ""
+
+
+async def test_delete_account(client: AsyncClient):
+    token_resp = await client.post(
+        "/api/v1/auth/register", json={"email": "del@example.com", "password": "pass"}
+    )
+    token = token_resp.json()["access_token"]
+    resp = await client.delete("/api/v1/users/me", headers={"Authorization": f"Bearer {token}"})
+    assert resp.status_code == 204
+    login = await client.post("/api/v1/auth/login", json={"email": "del@example.com", "password": "pass"})
+    assert login.status_code == 401

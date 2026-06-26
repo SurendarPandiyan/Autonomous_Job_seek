@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from jobplatform.auth.models import User
 from jobplatform.database import get_db
 from jobplatform.dependencies import get_current_user
 from jobplatform.profiles.schemas import ProfileResponse, ProfileUpdate
+from jobplatform.auth.service import delete_user
 from jobplatform.profiles.service import get_or_create_profile, update_profile
 
 router = APIRouter(prefix="/api/v1/users/me", tags=["profiles"])
@@ -25,3 +26,14 @@ async def patch_profile(
     db: AsyncSession = Depends(get_db),
 ):
     return await update_profile(db, current_user.id, data)
+
+
+@router.delete("", status_code=204)
+async def delete_account(
+    response: Response,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    await delete_user(db, current_user.id)
+    response.delete_cookie("refresh_token")
+    return Response(status_code=204)
