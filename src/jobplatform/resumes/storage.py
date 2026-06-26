@@ -21,7 +21,7 @@ class FileStorage(ABC):
 
 class LocalFileStorage(FileStorage):
     def __init__(self, base_dir: str) -> None:
-        self._base = Path(base_dir)
+        self._base = Path(base_dir).resolve()
         self._base.mkdir(parents=True, exist_ok=True)
 
     async def save(self, content: bytes, filename: str) -> str:
