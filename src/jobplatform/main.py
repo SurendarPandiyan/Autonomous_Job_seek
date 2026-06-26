@@ -1,11 +1,16 @@
+import time
+import uuid
 from contextlib import asynccontextmanager
 
 import structlog
+import structlog.contextvars
 from fastapi import FastAPI, Request
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
+from sqlalchemy import text
 
-from jobplatform.logging import configure_logging
+from jobplatform.log_config import configure_logging
+from jobplatform.database import AsyncSessionLocal
 from jobplatform.rate_limiting import limiter
 
 configure_logging()
@@ -26,9 +31,6 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    import time
-    import uuid
-
     structlog.contextvars.clear_contextvars()
     structlog.contextvars.bind_contextvars(request_id=str(uuid.uuid4()))
     start = time.perf_counter()
@@ -51,9 +53,6 @@ async def health():
 
 @app.get("/health/ready")
 async def health_ready():
-    from sqlalchemy import text
-    from jobplatform.database import AsyncSessionLocal
-
     async with AsyncSessionLocal() as session:
         await session.execute(text("SELECT 1"))
     return {"status": "ready"}
