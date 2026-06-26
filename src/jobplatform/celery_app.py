@@ -2,7 +2,7 @@ from celery import Celery
 
 from jobplatform.config import settings
 
-celery_app = Celery(
+celery_app: Celery = Celery(
     "jobplatform",
     broker=settings.redis_url,
     backend=settings.redis_url,

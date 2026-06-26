@@ -15,5 +15,15 @@ services:
     ports:
       - "6379:6379"
 
+  celery_worker:
+    build: .
+    command: uv run celery -A jobplatform.celery_app worker -Q scraper --loglevel=info
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@postgres:5432/jobplatform
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      - postgres
+      - redis
+
 volumes:
   postgres_data:
