@@ -20,7 +20,11 @@ async def _scrape_portal_async(
     task_id: str,
 ) -> dict:
     publish_log(task_id, "info", f"Starting scrape: {portal_id}", progress_pct=0.0)
-    adapter = portal_registry.get(portal_id)
+    try:
+        adapter = portal_registry.get(portal_id)
+    except KeyError:
+        publish_log(task_id, "error", f"Unknown portal: {portal_id}", progress_pct=100.0)
+        return {"portal_id": portal_id, "total": 0, "created": 0, "errors": 1}
     query = JobQuery(keywords=keywords, location=location, max_results=max_results)
 
     try:

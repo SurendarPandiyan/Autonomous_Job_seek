@@ -8,6 +8,13 @@ from jobplatform.config import settings
 logger = structlog.get_logger()
 
 
+def _safe_str(obj: object) -> str:
+    try:
+        return str(obj)
+    except Exception:
+        return type(obj).__name__
+
+
 def publish_log(task_id: str, level: str, message: str, progress_pct: float = 0.0) -> None:
     try:
         import redis as _redis
@@ -30,5 +37,5 @@ def get_task_status(task_id: str) -> dict:
         "task_id": task_id,
         "status": result.status,
         "result": result.result if result.ready() else None,
-        "error": str(result.result) if result.failed() else None,
+        "error": _safe_str(result.result) if result.failed() else None,
     }
