@@ -81,7 +81,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — Application model (ApplicationStatus enum + Application ORM) + Alembic migration 0007
-- [ ] 04-02-PLAN.md — Anthropic SDK install + settings key + tailor_resume + extract_resume_text service functions
+- [x] 04-02-PLAN.md — Anthropic SDK install + settings key + tailor_resume + extract_resume_text service functions
 - [ ] 04-03-PLAN.md — Application CRUD service (create/get/list/update_status) + Pydantic schemas
 - [ ] 04-04-PLAN.md — Celery tailor_and_apply task (pending→tailoring→applied transitions) + applier queue
 - [ ] 04-05-PLAN.md — FastAPI router (POST /api/v1/applications/ 202, GET /api/v1/applications/) + main.py
@@ -96,4 +96,4 @@ Plans:
 | 1. Foundation | 4/4 | Complete | 2026-06-27 |
 | 2. Job Discovery | 4/4 | Complete | 2026-06-27 |
 | 3. AI Matching | 7/7 | Complete | 2026-06-27 |
-| 4. Application Automation | 1/6 | In Progress|  |
+| 4. Application Automation | 2/6 | In Progress|  |
