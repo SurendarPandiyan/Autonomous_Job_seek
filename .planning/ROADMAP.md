@@ -60,7 +60,7 @@ Plans:
 Plans:
 - [x] 03-01-PLAN.md — Embedding service (OpenAI client, get_embedding, build_job_text, build_profile_text, compute_ats_score, compute_skill_gaps)
 - [x] 03-02-PLAN.md — JobMatch model + Alembic migration 0006 + HNSW index on jobs.embedding
-- [ ] 03-03-PLAN.md — Job embedding Celery task (embed_jobs_batch, batches jobs missing embeddings)
+- [x] 03-03-PLAN.md — Job embedding Celery task (embed_jobs_batch, batches jobs missing embeddings)
 - [ ] 03-04-PLAN.md — Profile embedding Celery task (embed_profile, hooks into profile/preferences update endpoints)
 - [ ] 03-05-PLAN.md — Match scoring Celery task (compute_matches_for_user, cosine sim + ATS + skill gaps + upsert)
 - [ ] 03-06-PLAN.md — Match router (GET /api/v1/matches/, GET /api/v1/jobs/{id}/match, schemas)
@@ -74,4 +74,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete | 2026-06-27 |
 | 2. Job Discovery | 4/4 | Complete | 2026-06-27 |
-| 3. AI Matching | 2/7 | In Progress|  |
+| 3. AI Matching | 3/7 | In Progress|  |
