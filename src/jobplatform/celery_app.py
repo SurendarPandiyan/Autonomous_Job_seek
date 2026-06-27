@@ -6,7 +6,7 @@ celery_app: Celery = Celery(
     "jobplatform",
     broker=settings.redis_url,
     backend=settings.redis_url,
-    include=["jobplatform.jobs.tasks"],
+    include=["jobplatform.jobs.tasks", "jobplatform.matching.tasks"],
 )
 
 celery_app.conf.update(
@@ -20,5 +20,8 @@ celery_app.conf.update(
     worker_prefetch_multiplier=1,
     task_routes={
         "jobplatform.jobs.tasks.scrape_portal": {"queue": "scraper"},
+        "jobplatform.matching.tasks.embed_jobs_batch": {"queue": "embedder"},
+        "jobplatform.matching.tasks.embed_profile": {"queue": "embedder"},
+        "jobplatform.matching.tasks.compute_matches_for_user": {"queue": "matcher"},
     },
 )

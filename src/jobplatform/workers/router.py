@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from jobplatform.auth.models import User
 from jobplatform.dependencies import get_current_user
 from jobplatform.jobs.tasks import scrape_portal
+from jobplatform.matching.tasks import embed_jobs_batch
 from jobplatform.workers.service import get_task_status
 
 router = APIRouter(prefix="/api/v1/workers", tags=["workers"])
@@ -29,6 +30,14 @@ async def trigger_scrape(
             "max_results": req.max_results,
         }
     )
+    return {"task_id": task.id}
+
+
+@router.post("/embed-jobs", status_code=202)
+async def trigger_embed_jobs(
+    current_user: User = Depends(get_current_user),
+):
+    task = embed_jobs_batch.apply_async()
     return {"task_id": task.id}
 
 
