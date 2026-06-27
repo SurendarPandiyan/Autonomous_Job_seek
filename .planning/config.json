@@ -1,0 +1,19 @@
+{
+  "workflow": {
+    "use_worktrees": false,
+    "parallelization": true,
+    "tdd_mode": false,
+    "mvp_mode": false,
+    "code_review": true,
+    "security_enforcement": false,
+    "test_command": "cd /home/surendar/Workspace/Projects/AI_System/job-platform && uv run pytest tests/ -q --tb=short"
+  },
+  "models": {
+    "researcher": "sonnet",
+    "planner": "sonnet",
+    "checker": "sonnet",
+    "executor": "sonnet",
+    "verifier": "sonnet"
+  },
+  "commit_docs": true
+}
