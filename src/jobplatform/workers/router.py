@@ -4,10 +4,14 @@ from pydantic import BaseModel
 from jobplatform.auth.models import User
 from jobplatform.dependencies import get_current_user
 from jobplatform.jobs.tasks import scrape_portal
-from jobplatform.matching.tasks import embed_jobs_batch, embed_profile
+from jobplatform.matching.tasks import compute_matches_for_user, embed_jobs_batch, embed_profile
 from jobplatform.workers.service import get_task_status
 
 router = APIRouter(prefix="/api/v1/workers", tags=["workers"])
+
+
+class ComputeMatchesRequest(BaseModel):
+    user_id: int
 
 
 class EmbedProfileRequest(BaseModel):
@@ -51,6 +55,15 @@ async def trigger_embed_profile(
     current_user: User = Depends(get_current_user),
 ):
     task = embed_profile.apply_async(kwargs={"user_id": req.user_id})
+    return {"task_id": task.id}
+
+
+@router.post("/compute-matches", status_code=202)
+async def trigger_compute_matches(
+    req: ComputeMatchesRequest,
+    current_user: User = Depends(get_current_user),
+):
+    task = compute_matches_for_user.apply_async(kwargs={"user_id": req.user_id})
     return {"task_id": task.id}
 
 
