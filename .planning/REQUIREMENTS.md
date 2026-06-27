@@ -1,5 +1,13 @@
 # Requirements
 
+## Phase 4: Application Automation
+
+- REQ-07: Application model (user_id, job_id, status, tailored_resume_text, applied_at)
+- REQ-08: LLM-powered resume tailoring per job description before applying
+- REQ-09: One-click apply endpoint that submits tailored resume to portal
+- REQ-10: Application status tracking (pending/applied/rejected/interview/offer)
+- REQ-11: GET /api/v1/applications/ listing all user applications with status and job details
+
 ## Phase 3: AI Matching Engine
 
 - REQ-01: Generate embeddings for jobs and user profiles using OpenAI text-embedding-3-small
