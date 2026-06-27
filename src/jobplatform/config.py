@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     upload_dir: str = "./uploads"
     max_upload_size_mb: int = 10
     openai_api_key: str = ""
+    anthropic_api_key: str = ""
 
 
 settings = Settings()
