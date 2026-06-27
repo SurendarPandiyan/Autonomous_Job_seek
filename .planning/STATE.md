@@ -1,0 +1,55 @@
+# Project State
+
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-06-27)
+
+**Core value:** Surface the most relevant job matches to the user automatically, ranked by fit.
+**Current focus:** Phase 3 — AI Matching
+
+## Current Position
+
+Phase: 3 of 3 (AI Matching)
+Plan: 1 of 7 in current phase (03-01 complete)
+Status: In progress
+Last activity: 2026-06-27 — Phase 3 Plan 01 complete (b5fdb49), matching service created, 44 tests pass
+
+Progress: [███████████░░░░░░░░░] ~72%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 8 (4 Phase 1 + 4 Phase 2)
+- Average duration: ~30 min/plan
+- Total execution time: ~4 hours
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| 1. Foundation | 4 | ~2h | ~30 min |
+| 2. Job Discovery | 4 | ~2h | ~30 min |
+
+## Accumulated Context
+
+### Decisions
+
+- Phase 1: SQLAlchemy async with asyncpg; Alembic for migrations
+- Phase 2: Celery 5 + Redis broker; httpx+BS4 for portal scraping; SHA-256 dedup
+- Phase 3 (planned): text-embedding-3-small (1536 dims); cosine similarity; materialized JobMatch table
+- Phase 3 Plan 01: openai_api_key defaults to "" so tests mock AsyncOpenAI; tenacity retry reraise=True on RateLimitError
+
+### Pending Todos
+
+None.
+
+### Blockers/Concerns
+
+- pgvector `pgvector.sqlalchemy.vector.VECTOR` import in Alembic autogenerate must be manually fixed to `from pgvector.sqlalchemy import Vector` + `Vector(1536)` (known issue from Phase 2)
+- AsyncMock required for all httpx async patches
+
+## Session Continuity
+
+Last session: 2026-06-27
+Stopped at: Phase 3 Plan 01 complete. Next: 03-02 (JobMatch model + migration 0006 + HNSW index).
+Resume file: None
