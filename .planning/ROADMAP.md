@@ -64,7 +64,7 @@ Plans:
 - [x] 03-04-PLAN.md — Profile embedding Celery task (embed_profile, hooks into profile/preferences update endpoints)
 - [x] 03-05-PLAN.md — Match scoring Celery task (compute_matches_for_user, cosine sim + ATS + skill gaps + upsert)
 - [x] 03-06-PLAN.md — Match router (GET /api/v1/matches/, GET /api/v1/jobs/{id}/match, schemas)
-- [ ] 03-07-PLAN.md — Integration test suite for all Phase 3 features (13 tests)
+- [x] 03-07-PLAN.md — Integration test suite for all Phase 3 features (13 tests)
 
 ## Progress
 
@@ -74,4 +74,4 @@ Plans:
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete | 2026-06-27 |
 | 2. Job Discovery | 4/4 | Complete | 2026-06-27 |
-| 3. AI Matching | 6/7 | In Progress|  |
+| 3. AI Matching | 7/7 | Complete | 2026-06-27 |
