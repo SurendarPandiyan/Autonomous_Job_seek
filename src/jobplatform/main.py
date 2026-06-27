@@ -16,6 +16,7 @@ from jobplatform.resumes.router import router as resumes_router
 from jobplatform.jobs.router import router as jobs_router
 from jobplatform.workers.router import router as workers_router
 from jobplatform.matching.router import router as matching_router
+from jobplatform.applications.router import router as applications_router
 from jobplatform.log_config import configure_logging
 from jobplatform.database import AsyncSessionLocal
 from jobplatform.rate_limiting import limiter
@@ -41,6 +42,7 @@ app.include_router(resumes_router)
 app.include_router(jobs_router)
 app.include_router(workers_router)
 app.include_router(matching_router)
+app.include_router(applications_router)
 
 
 @app.middleware("http")
