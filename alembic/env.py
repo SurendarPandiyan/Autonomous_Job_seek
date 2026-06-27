@@ -13,6 +13,7 @@ import jobplatform.preferences.models  # noqa: F401 — registers JobPreferences
 import jobplatform.resumes.models  # noqa: F401 — registers Resume with Base.metadata
 import jobplatform.jobs.models  # noqa: F401 — registers Job with Base.metadata
 import jobplatform.matching.models  # noqa: F401 — registers JobMatch with Base.metadata
+import jobplatform.applications.models  # noqa: F401 — registers Application with Base.metadata
 
 _db_url = os.environ.get("DATABASE_URL", settings.database_url)
 
