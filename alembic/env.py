@@ -12,6 +12,7 @@ import jobplatform.profiles.models  # noqa: F401 — registers Profile with Base
 import jobplatform.preferences.models  # noqa: F401 — registers JobPreferences with Base.metadata
 import jobplatform.resumes.models  # noqa: F401 — registers Resume with Base.metadata
 import jobplatform.jobs.models  # noqa: F401 — registers Job with Base.metadata
+import jobplatform.matching.models  # noqa: F401 — registers JobMatch with Base.metadata
 
 _db_url = os.environ.get("DATABASE_URL", settings.database_url)
 
@@ -31,9 +32,11 @@ def run_migrations_offline() -> None:
 async def run_migrations_online() -> None:
     connectable = create_async_engine(_db_url)
     async with connectable.connect() as connection:
-        await connection.run_sync(
-            lambda conn: context.configure(conn, target_metadata=target_metadata)
-        )
+        def configure(conn):
+            from pgvector.sqlalchemy import Vector
+            conn.dialect.ischema_names["vector"] = Vector
+            context.configure(conn, target_metadata=target_metadata)
+        await connection.run_sync(configure)
         async with connection.begin():
             await connection.run_sync(lambda _: context.run_migrations())
     await connectable.dispose()
