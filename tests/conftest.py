@@ -25,9 +25,17 @@ async def setup_db():
 
 @pytest_asyncio.fixture
 async def db():
-    async with _SessionLocal() as session:
-        yield session
-        await session.rollback()
+    # Wrap each test in a connection-level transaction that is always rolled back.
+    # session.commit() inside a test becomes a SAVEPOINT release, still within the
+    # outer BEGIN that conn.rollback() undoes — no data leaks between tests.
+    async with _engine.connect() as conn:
+        await conn.begin()
+        session = AsyncSession(bind=conn, expire_on_commit=False)
+        try:
+            yield session
+        finally:
+            await session.close()
+            await conn.rollback()
 
 
 @pytest_asyncio.fixture
