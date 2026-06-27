@@ -1,12 +1,17 @@
 import json
+from datetime import datetime, timezone
 
 from openai import AsyncOpenAI, RateLimitError
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import insert as pg_insert
+from sqlalchemy.ext.asyncio import AsyncSession
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
 
 from jobplatform.config import settings
 from jobplatform.jobs.models import Job
-from jobplatform.profiles.models import Profile
+from jobplatform.matching.models import JobMatch
 from jobplatform.preferences.models import JobPreferences
+from jobplatform.profiles.models import Profile
 
 
 @retry(
@@ -77,3 +82,78 @@ def compute_skill_gaps(
         ]
     profile_lower = {s.lower() for s in profile_skills}
     return [s for s in req_skills if s.lower() not in profile_lower]
+
+
+async def find_similar_jobs(
+    db: AsyncSession,
+    profile_embedding: list[float],
+    limit: int = 50,
+) -> list[tuple[Job, float]]:
+    stmt = (
+        select(Job, (1 - Job.embedding.cosine_distance(profile_embedding)).label("score"))
+        .where(Job.is_active == True)  # noqa: E712
+        .where(Job.embedding.is_not(None))
+        .order_by(Job.embedding.cosine_distance(profile_embedding))
+        .limit(limit)
+    )
+    result = await db.execute(stmt)
+    return [(row.Job, float(row.score)) for row in result]
+
+
+async def upsert_match(
+    db: AsyncSession,
+    user_id: int,
+    job_id: int,
+    score: float,
+    ats_score: float,
+    skill_gaps: list[str],
+) -> None:
+    now = datetime.now(timezone.utc)
+    stmt = pg_insert(JobMatch).values(
+        user_id=user_id,
+        job_id=job_id,
+        score=score,
+        ats_score=ats_score,
+        skill_gaps=skill_gaps,
+        created_at=now,
+        updated_at=now,
+    )
+    stmt = stmt.on_conflict_do_update(
+        constraint="uq_job_matches_user_job",
+        set_={
+            "score": stmt.excluded.score,
+            "ats_score": stmt.excluded.ats_score,
+            "skill_gaps": stmt.excluded.skill_gaps,
+            "updated_at": stmt.excluded.updated_at,
+        },
+    )
+    await db.execute(stmt)
+
+
+async def list_matches(
+    db: AsyncSession,
+    user_id: int,
+    limit: int = 50,
+    cursor: int | None = None,
+) -> list[JobMatch]:
+    stmt = (
+        select(JobMatch)
+        .where(JobMatch.user_id == user_id)
+        .order_by(JobMatch.score.desc().nulls_last())
+        .limit(limit)
+    )
+    if cursor is not None:
+        stmt = stmt.where(JobMatch.id < cursor)
+    result = await db.scalars(stmt)
+    return list(result.all())
+
+
+async def get_job_match(
+    db: AsyncSession,
+    user_id: int,
+    job_id: int,
+) -> JobMatch | None:
+    stmt = select(JobMatch).where(
+        JobMatch.user_id == user_id, JobMatch.job_id == job_id
+    )
+    return await db.scalar(stmt)
