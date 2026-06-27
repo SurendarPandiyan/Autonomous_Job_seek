@@ -8,7 +8,8 @@ Build a job aggregation + AI matching platform in three phases: auth foundation,
 
 - [x] **Phase 1: Foundation** - Auth, user profiles, preferences, resume storage
 - [x] **Phase 2: Job Discovery** - Portal adapters, scraping workers, jobs API
-- [ ] **Phase 3: AI Matching** - Embeddings, pgvector similarity, match scoring, match API
+- [x] **Phase 3: AI Matching** - Embeddings, pgvector similarity, match scoring, match API
+- [ ] **Phase 4: Application Automation** - One-click apply, ATS resume tailoring, application tracking
 
 ## Phase Details
 
@@ -66,12 +67,33 @@ Plans:
 - [x] 03-06-PLAN.md — Match router (GET /api/v1/matches/, GET /api/v1/jobs/{id}/match, schemas)
 - [x] 03-07-PLAN.md — Integration test suite for all Phase 3 features (13 tests)
 
+### Phase 4: Application Automation
+**Goal**: Users can apply to matched jobs with one click, with resumes tailored per job and applications tracked
+**Depends on**: Phase 3
+**Requirements**: REQ-07, REQ-08, REQ-09, REQ-10, REQ-11
+**Success Criteria** (what must be TRUE):
+  1. User can trigger application to a job from the matches list
+  2. Resume is tailored to job description using LLM before applying
+  3. Application status tracked (pending/applied/rejected/interview)
+  4. GET /api/v1/applications/ lists all user applications with status
+  5. Application history persisted and queryable
+**Plans**: 6 plans
+
+Plans:
+- [x] 04-01-PLAN.md — Application model (ApplicationStatus enum + Application ORM) + Alembic migration 0007
+- [ ] 04-02-PLAN.md — Anthropic SDK install + settings key + tailor_resume + extract_resume_text service functions
+- [ ] 04-03-PLAN.md — Application CRUD service (create/get/list/update_status) + Pydantic schemas
+- [ ] 04-04-PLAN.md — Celery tailor_and_apply task (pending→tailoring→applied transitions) + applier queue
+- [ ] 04-05-PLAN.md — FastAPI router (POST /api/v1/applications/ 202, GET /api/v1/applications/) + main.py
+- [ ] 04-06-PLAN.md — 13 pytest-asyncio tests covering REQ-07 through REQ-11
+
 ## Progress
 
-**Execution Order:** 1 → 2 → 3
+**Execution Order:** 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 4/4 | Complete | 2026-06-27 |
 | 2. Job Discovery | 4/4 | Complete | 2026-06-27 |
 | 3. AI Matching | 7/7 | Complete | 2026-06-27 |
+| 4. Application Automation | 1/6 | In Progress|  |
